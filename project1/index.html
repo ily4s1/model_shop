@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Model Shop — كاغولات</title>
+  <style>
+    :root{--accent:#111;--muted:#666;--bg:#f8f8f8;--card:#fff}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.4;margin:0;background:var(--bg);color:var(--accent)}
+    header{background:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #ececec}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;border-radius:8px;background:#111;color:#fff;display:grid;place-items:center;font-weight:700}
+    .brand h1{font-size:18px;margin:0}
+    .controls{display:flex;gap:8px;align-items:center}
+    .search{padding:8px 12px;border-radius:8px;border:1px solid #e6e6e6;background:#fafafa}
+    .container{max-width:1100px;margin:22px auto;padding:0 16px}
+
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .chip{padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #eee;cursor:pointer}
+    .chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(12,12,12,0.04);display:flex;flex-direction:column;gap:10px}
+    .thumb{width:100%;height:180px;border-radius:8px;background:#eee;display:grid;place-items:center;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .title{font-weight:600}
+    .price{color:var(--accent);font-weight:700}
+    .meta{display:flex;justify-content:space-between;align-items:center}
+
+    .cta{display:flex;gap:8px}
+    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:#fff;border:1px solid #eee}
+
+    footer{padding:18px 20px;text-align:center;color:var(--muted);font-size:14px;margin-top:28px}
+
+    /* modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex}
+    .modal-card{width:100%;max-width:760px;background:#fff;border-radius:12px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .modal-card img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+    .modal-info h2{margin:0 0 8px 0}
+    .tags{display:flex;gap:8px;margin:10px 0}
+    .tag{padding:6px 10px;border-radius:999px;border:1px solid #eee}
+
+    @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.modal-card{grid-template-columns:1fr}}
+    @media (max-width:520px){.grid{grid-template-columns:1fr}.brand h1{font-size:16px}.thumb{height:160px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>MODEL Shop</h1>
+        <div style="font-size:12px;color:var(--muted)">كَاغولات — عرض المنتجات</div>
+      </div>
+    </div>
+    <div class="controls">
+      <input id="search" class="search" placeholder="قلب على منتج أو لون" />
+      <button class="btn ghost" id="openCatalog">كاتالوج</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="filters" id="filters">
+      <div class="chip active" data-filter="all">الكل</div>
+      <div class="chip" data-filter="black">أسود</div>
+      <div class="chip" data-filter="white">أبيض</div>
+      <div class="chip" data-filter="red">أحمر</div>
+      <div class="chip" data-filter="blue">أزرق</div>
+    </div>
+
+    <section class="grid" id="productGrid">
+      <!-- هنا كتحط المنتجات بنفس الشكل -->
+
+      <article class="card" data-color="black" data-name="Balaclava Classic" data-price="15">
+        <div class="thumb"><img src="images/product1.jpg" alt="Balaclava Classic"></div>
+        <div class="title">Balaclava Classic</div>
+        <div class="meta"><div class="price">15 درهم</div><div class="tags"><span class="tag">أسود</span></div></div>
+        <div class="cta">
+          <button class="btn primary" data-action="details">تفاصيل</button>
+          <button class="btn" data-action="contact">تواصل</button>
+        </div>
+      </article>
+
+      <!-- باقي المنتجات … -->
+    </section>
+  </main>
+
+  <footer>
+    © MODEL Shop — تواصل معنا عبر WhatsApp لطلب المنتجات
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div><img id="modalImg" src="" alt=""/></div>
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <div id="modalPrice" style="font-weight:700;margin-bottom:8px"></div>
+        <p id="modalDesc" style="color:var(--muted)">كاغولة بسيطة ومريحة. استبدل الوصف حسب الحاجة.</p>
+        <div class="tags" id="modalTags"></div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="waOrder" class="btn primary">طلب عبر WhatsApp</button>
+          <button id="closeModal" class="btn ghost">سد</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === الرقم ديال WhatsApp ===
+    const WHATSAPP_NUMBER = '+212604245518';
+
+    const qs = s => document.querySelector(s);
+    const qsa = s => Array.from(document.querySelectorAll(s));
+
+    const searchInput = qs('#search');
+    searchInput.addEventListener('input', ()=>{
+      const q = searchInput.value.trim().toLowerCase();
+      qsa('#productGrid .card').forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const color = (card.dataset.color||'').toLowerCase();
+        const ok = !q || name.includes(q) || color.includes(q);
+        card.style.display = ok ? '' : 'none';
+      })
+    })
+
+    qsa('.chip').forEach(chip => chip.addEventListener('click', ()=>{
+      qsa('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      const f = chip.dataset.filter;
+      qsa('#productGrid .card').forEach(card=>{
+        card.style.display = (f==='all' || card.dataset.color===f) ? '' : 'none';
+      })
+    }))
+
+    const modal = qs('#modal');
+    const modalImg = qs('#modalImg');
+    const modalTitle = qs('#modalTitle');
+    const modalPrice = qs('#modalPrice');
+    const modalTags = qs('#modalTags');
+    const waOrder = qs('#waOrder');
+
+    qsa('[data-action="details"]').forEach(btn => btn.addEventListener('click', e=>{
+      const card = e.target.closest('.card');
+      openModalFromCard(card);
+    }))
+
+    qsa('[data-action="contact"]').forEach(btn => btn.addEventListener('click', e=>{
+      const card = e.target.closest('.card');
+      const name = encodeURIComponent(card.dataset.name + ' - ' + card.dataset.color);
+      const price = card.dataset.price;
+      const message = encodeURIComponent('سلام، بغيت نطلب: ' + name + ' (الثمن: ' + price + ' درهم).')
+      window.open('https://wa.me/' + WHATSAPP_NUMBER.replace(/\+/,'') + '?text=' + message, '_blank')
+    }))
+
+    function openModalFromCard(card){
+      modalImg.src = card.querySelector('img').src;
+      modalTitle.textContent = card.dataset.name;
+      modalPrice.textContent = card.dataset.price + ' درهم';
+      modalTags.innerHTML = '';
+      const tag = document.createElement('span'); tag.className='tag'; tag.textContent = card.dataset.color; modalTags.appendChild(tag);
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+      waOrder.onclick = ()=>{
+        const name = encodeURIComponent(card.dataset.name + ' - ' + card.dataset.color);
+        const price = card.dataset.price;
+        const message = encodeURIComponent('سلام، بغيت نطلب: ' + name + ' (الثمن: ' + price + ' درهم).')
+        window.open('https://wa.me/' + WHATSAPP_NUMBER.replace(/\+/,'') + '?text=' + message, '_blank')
+      }
+    }
+
+    qs('#closeModal').addEventListener('click', ()=>{ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); })
+    modal.addEventListener('click', e=>{ if(e.target===modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); } })
+
+    qs('#openCatalog').addEventListener('click', ()=>{ qs('#productGrid').scrollIntoView({behavior:'smooth'}); })
+  </script>
+</body>
+</html>
